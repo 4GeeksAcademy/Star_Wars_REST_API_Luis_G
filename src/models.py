@@ -9,8 +9,10 @@ class User(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
-    def __init__ (self,id, email, password, is_active):
-        return 
+    def __init__ (self, email, password, is_active):
+        self.email = email
+        self.password = password
+        self.is_active = True
 
     def __repr__(self):
         return '<User %r>' % self.id
@@ -34,8 +36,12 @@ class User(db.model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     # date = db.Column(db.Date, index = True)
 
-    def __init__(self, id, name, last_name, email, password, is_active):
-        return
+    def __init__ (self, name, last_name, email, password, is_active):
+        self.name = name
+        self.last_name = last_name
+        self.email = email
+        self.password = password
+        self.is_active = True
 
 
     def __repr__(self):

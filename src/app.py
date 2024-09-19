@@ -36,28 +36,26 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+
 @app.route('/user', methods=['GET'])
 def handle_hello():
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+    users = User.query.all()
+    usuarios_serializados = [ persona.serialize() for persona in users  ]
+    return jsonify(usuarios_serializados), 200
 
-    return jsonify(response_body), 200
 
 @app.route('/user', methods=['POST'])
 def add_user():
     body: request.json
     
-    username = body.get('username',None)
+    name = body.get('name',None)
+    last_name = body.get('last_name',None)
     email = body.get('email',None)
     password = body.get('password', None)
 
-    if username == None or email == None or password == None:
-        return jsonify({"msg" : "Missing fields"}), 400
-    
     try:
-        new_user = User(email = email, usename = username, password = password)
+        new_user = User(name = name, last_name = last_name, email = email, password = password )
 
         db.session.add(new_user) 
         db.session.commit()
@@ -65,21 +63,45 @@ def add_user():
         return jsonify({"msg":"success"}), 201
     
     except:
-        return jsonify({"Error":"Something happened uu"}), 500
+        return jsonify({"Error":"Something happened"}), 500
     
 
-@app.route('/user/<string:username>', methods=['DELETE'])
-def remove_user(username):
-    searched_user = User.query.filter_by(username = username).one_or_none()
+@app.route('/user/<string:id>', methods=['DELETE'])
+def remove_user(id):
+    searched_user = User.query.filter_by(id = id).one_or_none()
 
     if searched_user != None:
         db.session.delete(searched_user)
         db.session.commit()
         return jsonify(searched_user.serialize()),200
     else:
-        return jsonify({"error": f"User with username: {username} not found!"}), 404
+        return jsonify({"error": f"User with id: {id} not found!"}), 404
 
-    return jsonify({"Error":"Something happened uu"}), 500
+@app.route('/user/<string:username>' , methods=['PUT'])
+def edit_user(username):
+    searched_user = User.query.filter_by(username = username).one_or_none()
+
+    body = request.json
+    new_name = body.get('name', None)
+    new_last_name = body.get('last_name', None)
+    new_password = body.get('password', None)
+
+    if searched_user != None:
+
+        if new_name != None:
+            searched_user.name = new_name
+        if new_last_name != None:
+            searched_user.last_name = new_last_name
+        if new_password != None:
+            searched_user.password = new_password
+
+        db.session.commit()
+
+        return jsonify(searched_user.serialize(),200)
+    else:
+        return jsonify({"error": f"User with id: {id} not found!"}), 404
+
+
 
 
 # this only runs if `$ python src/app.py` is executed
