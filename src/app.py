@@ -45,6 +45,43 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+@app.route('/user', methods=['POST'])
+def add_user():
+    body: request.json
+    
+    username = body.get('username',None)
+    email = body.get('email',None)
+    password = body.get('password', None)
+
+    if username == None or email == None or password == None:
+        return jsonify({"msg" : "Missing fields"}), 400
+    
+    try:
+        new_user = User(email = email, usename = username, password = password)
+
+        db.session.add(new_user) 
+        db.session.commit()
+
+        return jsonify({"msg":"success"}), 201
+    
+    except:
+        return jsonify({"Error":"Something happened uu"}), 500
+    
+
+@app.route('/user/<string:username>', methods=['DELETE'])
+def remove_user(username):
+    searched_user = User.query.filter_by(username = username).one_or_none()
+
+    if searched_user != None:
+        db.session.delete(searched_user)
+        db.session.commit()
+        return jsonify(searched_user.serialize()),200
+    else:
+        return jsonify({"error": f"User with username: {username} not found!"}), 404
+
+    return jsonify({"Error":"Something happened uu"}), 500
+
+
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
