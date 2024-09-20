@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Personaje, Planeta, Vehiculo, Favorites
 #from models import Person
 
 app = Flask(__name__)
@@ -37,12 +37,12 @@ def sitemap():
     return generate_sitemap(app)
 
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
+# @app.route('/user', methods=['GET'])
+# def handle_hello():
 
-    users = User.query.all()
-    usuarios_serializados = [ persona.serialize() for persona in users  ]
-    return jsonify(usuarios_serializados), 200
+#     users = User.query.all()
+#     usuarios_serializados = [ persona.serialize() for persona in users  ]
+#     return jsonify(usuarios_serializados), 200
 
 
 @app.route('/user', methods=['POST'])
@@ -66,7 +66,7 @@ def add_user():
         return jsonify({"Error":"Something happened"}), 500
     
 
-@app.route('/user/<string:id>', methods=['DELETE'])
+@app.route('/user/<integer:id>', methods=['DELETE'])
 def remove_user(id):
     searched_user = User.query.filter_by(id = id).one_or_none()
 
@@ -77,9 +77,9 @@ def remove_user(id):
     else:
         return jsonify({"error": f"User with id: {id} not found!"}), 404
 
-@app.route('/user/<string:username>' , methods=['PUT'])
-def edit_user(username):
-    searched_user = User.query.filter_by(username = username).one_or_none()
+@app.route('/user/<integer:id>' , methods=['PUT'])
+def edit_user(id):
+    searched_user = User.query.filter_by(id = id).one_or_none()
 
     body = request.json
     new_name = body.get('name', None)
@@ -102,6 +102,44 @@ def edit_user(username):
         return jsonify({"error": f"User with id: {id} not found!"}), 404
 
 
+# [GET] /people Get a list of all the people in the database.
+@app.route('/personaje', methods=['GET'])
+def get_personajes():
+    personajes = Personaje.query.all()
+    personajes_serializados = [ personaje.serialize() for personaje in personajes ]
+    return jsonify(personajes_serializados), 200
+
+# [GET] /people/<int:people_id> Get one single person's information.
+@app.route('/personaje/<integer:id>', methods=['GET'])
+def get_personaje():
+    searched_personaje = Personaje.query.filter_by(id = id).one_or_none()
+    return jsonify(searched_personaje.serialize()), 200
+
+# [GET] /planets Get a list of all the planets in the database.
+@app.route('/planeta', methods=['GET'])
+def get_planetas():
+    planetas = Planeta.query.all()
+    planetas_serializados = [ planeta.serialize() for planeta in planetas ]
+    return jsonify(planetas_serializados), 200
+
+# [GET] /planets/<int:planet_id> 
+@app.route('/planet/<integer:id>', methods=['GET'])
+def get_planeta():
+    searched_planeta = Planeta.query.filter_by(id = id).one_or_none()
+    return jsonify(searched_planeta.serialize()), 200
+
+# [GET] /users Get a list of all the blog post users.
+@app.route('/user', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    usuarios_serializados = [ usuario.serialize() for usuario in users  ]
+    return jsonify(usuarios_serializados), 200
+
+# [GET] /users/favorites Get all the favorites that belong to the current user.
+# [POST] /favorite/planet/<int:planet_id> Add a new favorite planet to the current user with the planet id = planet_id.
+# [POST] /favorite/people/<int:people_id> Add new favorite people to the current user with the people id = people_id.
+# [DELETE] /favorite/planet/<int:planet_id> Delete a favorite planet with the id = planet_id.
+# [DELETE] /favorite/people/<int:people_id> Delete a favorite people with the id = people_id.
 
 
 # this only runs if `$ python src/app.py` is executed
