@@ -4,7 +4,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Date, Float
 db = SQLAlchemy()
 
 
-class User(db.model):
+class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, unique = True, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
@@ -34,7 +34,7 @@ class User(db.model):
         }
 
 
-class Personaje(db.model):
+class Personaje(db.Model):
     __tablename__ = 'personaje'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(250), nullable = False)
@@ -56,7 +56,7 @@ class Personaje(db.model):
 
 
 
-class Planeta(db.model):
+class Planeta(db.Model):
     __tablename__ = 'planeta'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(250), nullable = False)
@@ -75,7 +75,7 @@ class Planeta(db.model):
         }
 
 
-class Vehiculo(db.model):
+class Vehiculo(db.Model):
     __tablename__ = 'vehiculo'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(250), nullable = False)
@@ -97,7 +97,7 @@ class Vehiculo(db.model):
 
 
     
-class Favorites(db.model):
+class Favorites(db.Model):
     __tablename__ = 'favorites'
     id = db.Column(db.Integer, primary_key = True)
     user = db.Column(db.Integer, ForeignKey('user.id'))

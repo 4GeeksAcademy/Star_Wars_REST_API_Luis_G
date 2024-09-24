@@ -66,7 +66,7 @@ def add_user():
         return jsonify({"Error":"Something happened"}), 500
     
 
-@app.route('/user/<integer:id>', methods=['DELETE'])
+@app.route('/user/<int:id>', methods=['DELETE'])
 def remove_user(id):
     searched_user = User.query.filter_by(id = id).one_or_none()
 
@@ -77,7 +77,7 @@ def remove_user(id):
     else:
         return jsonify({"error": f"User with id: {id} not found!"}), 404
 
-@app.route('/user/<integer:id>' , methods=['PUT'])
+@app.route('/user/<int:id>' , methods=['PUT'])
 def edit_user(id):
     searched_user = User.query.filter_by(id = id).one_or_none()
 
@@ -110,7 +110,7 @@ def get_personajes():
     return jsonify(personajes_serializados), 200
 
 # [GET] /people/<int:people_id> Get one single person's information.
-@app.route('/personaje/<integer:id>', methods=['GET'])
+@app.route('/personaje/<int:id>', methods=['GET'])
 def get_personaje():
     searched_personaje = Personaje.query.filter_by(id = id).one_or_none()
     return jsonify(searched_personaje.serialize()), 200
@@ -123,7 +123,7 @@ def get_planetas():
     return jsonify(planetas_serializados), 200
 
 # [GET] /planets/<int:planet_id> 
-@app.route('/planet/<integer:id>', methods=['GET'])
+@app.route('/planet/<int:id>', methods=['GET'])
 def get_planeta():
     searched_planeta = Planeta.query.filter_by(id = id).one_or_none()
     return jsonify(searched_planeta.serialize()), 200
