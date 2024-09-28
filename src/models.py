@@ -21,7 +21,6 @@ class User(db.Model):
         self.password = password
         self.is_active = True
 
-
     def __repr__(self):
         return '<User %r>' % self.id
 
@@ -45,7 +44,13 @@ class Personaje(db.Model):
     unidades_peso = db.Column(db.String(250), nullable = False)
 
     def __init__(self, id, name, planeta_origen, altura, unidades_altura, peso, unidades_peso):
-        return
+        self.id = id
+        self.name = name
+        self.planeta_origen = planeta_origen
+        self.altura = altura
+        self.unidades_altura = unidades_altura
+        self.peso = peso
+        self.unidades_peso = unidades_peso
 
     def serialize(self):
         return {
@@ -53,7 +58,6 @@ class Personaje(db.Model):
             "name": self.name,
             # do not serialize the password, its a security breach
         }
-
 
 
 class Planeta(db.Model):
@@ -65,7 +69,11 @@ class Planeta(db.Model):
     poblacion = db.Column(db.Integer, nullable = False)
 
     def __init__(self, id, name, clima, diametro, poblacion):
-        return
+        self.id = id
+        self.name = name
+        self.clima = clima
+        self.diametro = diametro
+        self.poblacion = poblacion
 
     def serialize(self):
         return {
@@ -86,7 +94,13 @@ class Vehiculo(db.Model):
     modelo = db.Column(db.String(250), nullable = False)
 
     def __init__(self, id, name, marca, capacidad, pasajeros, tripulacion, modelo):
-        return
+        self.id = id
+        self.name = name
+        self.marca = marca
+        self.capacidad = capacidad 
+        self.pasajeros = pasajeros
+        self.tripulacion = tripulacion
+        self.modelo = modelo
 
     def serialize(self):
         return {
@@ -94,9 +108,8 @@ class Vehiculo(db.Model):
             "name": self.name,
             # do not serialize the password, its a security breach
         }
+  
 
-
-    
 class Favorites(db.Model):
     __tablename__ = 'favorites'
     id = db.Column(db.Integer, primary_key = True)
@@ -106,11 +119,18 @@ class Favorites(db.Model):
     vehiculo = db.Column(db.Integer, ForeignKey('vehiculo.id'))
 
     def __init__(self, id, user, personaje, planeta, vehiculo):
-        return
+        self.id = id
+        self.user = user
+        self.personaje = personaje
+        self.planeta = planeta
+        self.vehiculo = vehiculo
 
     def serialize(self):
         return {
-            "id": self.id,
-            "name": self.name,
+            "id" : self.id,
+            "user": self.user,
+            "personaje": self.personaje,
+            "planeta" : self.planeta,
+            "vehiculo": self.vehiculo,
             # do not serialize the password, its a security breach
         }
